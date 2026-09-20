@@ -1,6 +1,13 @@
-const bcrypt = require('bcryptjs');
-
 /* eslint-disable camelcase */
+
+/* bcryptjs нужен только для паролей персонала. Подключаем его лениво, а не
+   строкой наверху: заготовку читает ещё и scripts/snapshot.js, который
+   собирает витрину меню там, где зависимостей сервера нет вовсе (Vercel).
+   С обычным require файл падал бы на загрузке и ронял сборку. */
+function hashPassword(plain) {
+  // eslint-disable-next-line global-require
+  return require('bcryptjs').hashSync(plain, 10);
+}
 
 const t = (ru, en, uz) => ({ ru, en, uz });
 
@@ -174,7 +181,15 @@ function buildTables() {
   return tables;
 }
 
-module.exports = function seed() {
+/**
+ * @param {{menuOnly?: boolean}} [options]
+ *   menuOnly — собрать только то, что видит гость: без логинов и паролей.
+ *   В этом режиме bcryptjs не нужен, поэтому меню можно собрать и без
+ *   установленных зависимостей сервера.
+ */
+module.exports = function seed(options) {
+  const menuOnly = !!(options && options.menuOnly);
+
   return {
     settings: {
       restaurantName: 'CULT RESTAURANT',
@@ -209,22 +224,24 @@ module.exports = function seed() {
     items: buildItems(),
     tables: buildTables(),
     orders: [],
-    users: [
-      {
-        id: 'usr_admin',
-        username: 'admin',
-        // Default credentials: admin / cult2026 — change them in the admin panel.
-        passwordHash: bcrypt.hashSync('cult2026', 10),
-        role: 'admin',
-        name: 'Администратор',
-      },
-      {
-        id: 'usr_waiter',
-        username: 'waiter',
-        passwordHash: bcrypt.hashSync('cult1234', 10),
-        role: 'waiter',
-        name: 'Официант',
-      },
-    ],
+    users: menuOnly
+      ? []
+      : [
+          {
+            id: 'usr_admin',
+            username: 'admin',
+            // Default credentials: admin / cult2026 — change them in the admin panel.
+            passwordHash: hashPassword('cult2026'),
+            role: 'admin',
+            name: 'Администратор',
+          },
+          {
+            id: 'usr_waiter',
+            username: 'waiter',
+            passwordHash: hashPassword('cult1234'),
+            role: 'waiter',
+            name: 'Официант',
+          },
+        ],
   };
 };

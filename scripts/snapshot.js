@@ -27,7 +27,9 @@ function build() {
       console.warn('[snapshot] db.json нечитаем, беру исходное меню:', err.message);
     }
   }
-  if (!state) state = require('../server/seed/data')();
+  /* menuOnly — без логинов и паролей: тогда заготовке не нужен bcryptjs,
+     а значит витрина собирается и там, где зависимости сервера не ставились. */
+  if (!state) state = require('../server/seed/data')({ menuOnly: true });
 
   const s = state.settings || {};
 
@@ -58,11 +60,23 @@ function build() {
   };
 }
 
-const data = build();
-fs.mkdirSync(path.dirname(OUT), { recursive: true });
-fs.writeFileSync(OUT, JSON.stringify(data), 'utf8');
-
-console.log(
-  `[snapshot] ${path.relative(path.join(__dirname, '..'), OUT)} — ` +
-    `${data.categories.length} категорий, ${data.items.length} блюд`
-);
+/* Витрина — удобство, а не условие работы сайта. Если снимок почему-то не
+   собрался, сборка не должна падать: в репозитории лежит предыдущий файл, и
+   он вполне годится. Молча ронять деплой из-за вспомогательного скрипта —
+   худшее, что можно сделать. */
+try {
+  const data = build();
+  fs.mkdirSync(path.dirname(OUT), { recursive: true });
+  fs.writeFileSync(OUT, JSON.stringify(data), 'utf8');
+  console.log(
+    `[snapshot] ${path.relative(path.join(__dirname, '..'), OUT)} — ` +
+      `${data.categories.length} категорий, ${data.items.length} блюд`
+  );
+} catch (err) {
+  console.warn('[snapshot] не удалось собрать снимок меню:', err.message);
+  if (fs.existsSync(OUT)) {
+    console.warn('[snapshot] оставляю прежний файл из репозитория, сборка продолжается');
+  } else {
+    console.warn('[snapshot] снимка нет — сайт без сервера покажет ошибку связи');
+  }
+}
