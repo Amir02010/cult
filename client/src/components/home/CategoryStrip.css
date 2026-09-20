@@ -37,7 +37,6 @@
 .cat-card__photo,
 .cat-card__veil,
 .cat-card__sheen,
-.cat-card .tilt__glare,
 .cat-card__body {
   position: absolute;
   inset: 0;
@@ -202,8 +201,7 @@
   .cat-card {
     aspect-ratio: 150 / 210;
   }
-  .cat-card__sheen,
-  .cat-card .tilt__glare {
+  .cat-card__sheen {
     display: none;
   }
   .cat-card__name {

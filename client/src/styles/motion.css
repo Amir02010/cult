@@ -56,8 +56,6 @@
   --tilt-rx: 0deg;
   --tilt-ry: 0deg;
   --tilt-scale: 1;
-  --tilt-mx: 50%;
-  --tilt-my: 50%;
   transform: perspective(1000px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry))
     scale(var(--tilt-scale));
   transform-style: preserve-3d;
@@ -67,25 +65,6 @@
 
 .tilt:hover {
   transition-duration: 0.12s;
-}
-
-/* a highlight that follows the pointer across the surface */
-.tilt__glare {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-  background: radial-gradient(
-    38% 38% at var(--tilt-mx) var(--tilt-my),
-    rgba(255, 240, 214, 0.22),
-    transparent 70%
-  );
-  transition: opacity 0.4s var(--ease);
-  z-index: 3;
-}
-
-.tilt:hover .tilt__glare {
-  opacity: 1;
 }
 
 /* content that lifts off the card surface while it tilts */
@@ -186,11 +165,60 @@
   .tilt {
     transform: none !important;
   }
-  .tilt__glare,
   .shine::after {
     display: none;
   }
   .page-fade {
+    animation: none;
+  }
+}
+
+/* ------------------------------------------------- смена категории (swap)
+
+   Переключение вкладки не перезагружает страницу: обложка и лента вкладок
+   стоят на месте, а содержимое сменяется само. Старое уходит вверх, новое
+   поднимается снизу, карточки — волной по своему номеру.
+
+   Обычное появление при прокрутке (.reveal) здесь отключено: оно рассчитано
+   на первый показ и в паре со swap дало бы двойную анимацию. */
+
+.swap .reveal {
+  opacity: 1;
+  transform: none;
+  transition: none;
+}
+
+.swap--out > * {
+  animation: swapOut 0.32s cubic-bezier(0.5, 0, 0.75, 0) both;
+  animation-delay: calc(var(--i, 0) * 0.025s);
+}
+
+.swap--in > * {
+  animation: swapIn 0.55s var(--ease) both;
+  animation-delay: calc(var(--i, 0) * 0.045s);
+}
+
+@keyframes swapOut {
+  to {
+    opacity: 0;
+    transform: translateY(-30px) scale(0.97);
+  }
+}
+
+@keyframes swapIn {
+  from {
+    opacity: 0;
+    transform: translateY(42px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .swap--out > *,
+  .swap--in > * {
     animation: none;
   }
 }

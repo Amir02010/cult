@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useLocation, useParams } from 'react-router-dom';
 import Header from '../components/layout/Header';
 import Footer from '../components/layout/Footer';
 import Icon from '../components/ui/Icon';
@@ -15,7 +15,12 @@ export default function OrderPage() {
   const { t, p, money } = useApp();
   const [order, setOrder] = useState(null);
   const [error, setError] = useState(false);
-  const [celebrate, setCelebrate] = useState(false);
+  const location = useLocation();
+  /* 'sent' — гость только что отправил заказ, 'accepted' — официант его
+     подтвердил. Оба момента показывают дракона, текст разный. */
+  const [celebrate, setCelebrate] = useState(
+    location.state && location.state.justSent ? 'sent' : null
+  );
 
   const load = useCallback(async () => {
     try {
@@ -50,7 +55,7 @@ export default function OrderPage() {
     } catch (err) {
       /* приватный режим — покажем и не запомним, это лучше, чем не показать */
     }
-    setCelebrate(true);
+    setCelebrate('accepted');
   }, [status, id]);
 
   const stepIndex = order ? FLOW.indexOf(order.status) : -1;
@@ -129,7 +134,14 @@ export default function OrderPage() {
 
       <Footer />
 
-      {celebrate && <OrderAccepted order={order} onClose={() => setCelebrate(false)} />}
+      {celebrate && (
+        <OrderAccepted
+          key={celebrate}
+          mode={celebrate}
+          order={order}
+          onClose={() => setCelebrate(null)}
+        />
+      )}
     </div>
   );
 }

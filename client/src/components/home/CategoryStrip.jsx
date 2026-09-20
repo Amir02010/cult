@@ -39,7 +39,6 @@ export function CategoryCard({ category, index = 0 }) {
           </span>
         </span>
         <span className="cat-card__sheen" />
-        <span className="tilt__glare" />
       </span>
     </Link>
     </span>

@@ -14,7 +14,7 @@ const FLY_SOUND = `${process.env.PUBLIC_URL}/sounds/dragon-fly.mp3`;
  * запускает её целиком, поэтому фазы не расходятся между собой, даже если
  * вкладка на секунду ушла в фон.
  */
-export default function OrderAccepted({ order, onClose }) {
+export default function OrderAccepted({ order, onClose, mode = 'accepted' }) {
   const { t } = useApp();
   const [run, setRun] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -50,7 +50,7 @@ export default function OrderAccepted({ order, onClose }) {
       className={`ok${run ? ' ok--run' : ''}${leaving ? ' ok--out' : ''}`}
       role="dialog"
       aria-modal="true"
-      aria-label={t('accepted.title')}
+      aria-label={t(`${mode === 'sent' ? 'sent' : 'accepted'}.title`)}
     >
       <button type="button" className="ok__scrim" onClick={close} tabIndex={-1} aria-label="" />
 
@@ -79,13 +79,15 @@ export default function OrderAccepted({ order, onClose }) {
           ))}
         </div>
 
-        <h2 className="display ok__title">{t('accepted.title')}</h2>
+        <h2 className="display ok__title">
+          {t(mode === 'sent' ? 'sent.title' : 'accepted.title')}
+        </h2>
         {order && (
           <p className="ok__num label">
             {t('order.number')} · <strong>#{order.publicId}</strong>
           </p>
         )}
-        <p className="ok__text">{t('accepted.text')}</p>
+        <p className="ok__text">{t(mode === 'sent' ? 'sent.text' : 'accepted.text')}</p>
 
         <button type="button" className="btn ok__btn shine" onClick={close}>
           {t('accepted.close')}

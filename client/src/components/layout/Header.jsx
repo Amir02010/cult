@@ -36,29 +36,40 @@ export default function Header() {
     setSearchOpen(false);
   }, [location.pathname]);
 
+  const activeLang = Math.max(0, languages.findIndex((l) => l.code === lang));
+
   return (
     <>
       <header className={`site-header${scrolled ? ' is-scrolled' : ''}`}>
         <div className="site-header__inner shell">
-          <div className="site-header__left">
-            <Link to="/" className="brand" aria-label="CULT Restaurant">
-              <Logo size={36} className="brand__mark" />
-              <span className="brand__text">
-                <span className="brand__name">CULT</span>
-                <span className="brand__sub">Restaurant</span>
-              </span>
-            </Link>
+          <Link to="/" className="brand" aria-label="CULT Restaurant">
+            <Logo size={36} className="brand__mark" />
+            <span className="brand__text">
+              <span className="brand__name">CULT</span>
+              <span className="brand__sub">Restaurant</span>
+            </span>
+          </Link>
 
-            <span className="site-header__divider" aria-hidden="true" />
-
-            <NavLink to="/menu" className="site-header__tag label">
-              {t('nav.onlineMenu')}
+          <nav className="site-header__nav" aria-label={t('nav.onlineMenu')}>
+            <NavLink
+              to="/menu"
+              className={({ isActive }) => `navpill${isActive ? ' is-active' : ''}`}
+            >
+              <span className="navpill__dot" aria-hidden="true" />
+              <span className="label">{t('nav.onlineMenu')}</span>
             </NavLink>
-            <span className="site-header__rule" aria-hidden="true" />
-          </div>
+          </nav>
 
           <div className="site-header__right">
-            <div className="lang" role="group" aria-label="Language">
+            {/* Языки — один переключатель с подвижной подложкой, а не три
+                подчёркнутых слова: так видно, что это выбор из набора. */}
+            <div
+              className="lang"
+              role="group"
+              aria-label="Language"
+              style={{ '--lang-i': activeLang, '--lang-n': languages.length }}
+            >
+              <span className="lang__thumb" aria-hidden="true" />
               {languages.map((l) => (
                 <button
                   key={l.code}
@@ -72,15 +83,13 @@ export default function Header() {
               ))}
             </div>
 
-            <span className="site-header__divider" aria-hidden="true" />
-
             <button
               type="button"
               className="icon-btn"
               onClick={() => setSearchOpen(true)}
               aria-label={t('nav.search')}
             >
-              <Icon name="search" size={21} />
+              <Icon name="search" size={19} />
             </button>
 
             <button
@@ -89,11 +98,12 @@ export default function Header() {
               onClick={() => setOpen(true)}
               aria-label={t('nav.cart')}
             >
-              <Icon name="cart" size={21} />
-              <span key={bump} className={`cart-badge${count ? ' is-filled' : ''}${bump ? ' pop' : ''}`}>
-                {count}
-              </span>
-              <span className={`icon-btn__ripple${bump ? ' is-on' : ''}`} key={`r${bump}`} />
+              <Icon name="cart" size={19} />
+              {count > 0 && (
+                <span key={bump} className="cart-badge pop">
+                  {count}
+                </span>
+              )}
             </button>
 
             <button
@@ -103,10 +113,12 @@ export default function Header() {
               aria-label={t('nav.menu')}
               aria-expanded={menuOpen}
             >
-              <Icon name="burger" size={21} />
+              <Icon name="burger" size={19} />
             </button>
           </div>
         </div>
+
+        <span className="site-header__hair" aria-hidden="true" />
       </header>
 
       <SearchOverlay open={searchOpen} onClose={() => setSearchOpen(false)} />

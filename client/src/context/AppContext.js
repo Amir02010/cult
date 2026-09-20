@@ -57,6 +57,22 @@ export function AppProvider({ children }) {
       const payload = await api.menu();
       setData(payload);
       setStatus('ready');
+      return;
+    } catch (err) {
+      /* Сервера нет — ниже пробуем витрину. Если и её нет, это обычная
+         ошибка связи, и гость увидит предложение повторить. */
+    }
+
+    /* Витрина: собранный сайт может лежать там, где сервера не существует
+       (например на Vercel). Рядом со статикой лежит снимок меню — показываем
+       его, чтобы страница не была пустой. Заказ в этом режиме выключен
+       самим снимком, а не спрятан на клиенте. */
+    try {
+      const res = await fetch(`${process.env.PUBLIC_URL}/menu-snapshot.json`);
+      if (!res.ok) throw new Error('нет снимка');
+      const snapshot = await res.json();
+      setData(snapshot);
+      setStatus('ready');
     } catch (err) {
       setStatus('error');
     }
@@ -112,6 +128,8 @@ export function AppProvider({ children }) {
       reload: load,
       settings: data.settings,
       locked: !!data.locked,
+      /* true — сайт открыт без сервера, как витрина: меню видно, заказ нет */
+      demo: !!data.demo,
       categories: data.categories,
       items: data.items,
       tables: data.tables,

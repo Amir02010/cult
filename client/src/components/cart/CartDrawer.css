@@ -233,3 +233,24 @@
 .cart-drawer__clear:hover {
   color: #e0938a;
 }
+
+/* Пояснение для витрины без сервера */
+.cart-drawer__demo {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: rgba(var(--card), 0.7);
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--ink-soft);
+}
+
+.cart-drawer__demo svg {
+  flex: none;
+  margin-top: 1px;
+  color: var(--gold-deep);
+}

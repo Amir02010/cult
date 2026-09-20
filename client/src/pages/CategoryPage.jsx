@@ -9,13 +9,33 @@ import Icon from '../components/ui/Icon';
 import { useApp } from '../context/AppContext';
 import './CategoryPage.css';
 
+/* Сколько старые карточки уходят вверх, прежде чем встанут новые. Держать
+   в одном месте с CSS: длительность здесь и в анимации swapOut совпадают. */
+const SWAP_OUT = 320;
+
 export default function CategoryPage() {
   const { slug } = useParams();
   const { t, p, categories, itemsByCategory, status } = useApp();
   const [active, setActive] = useState(null);
   const [params, setParams] = useSearchParams();
 
-  const category = categories.find((c) => c.slug === slug);
+  /* Показанная категория отстаёт от адреса на время проводов: вкладка
+     подсвечивается сразу, а карточки успевают уйти вверх и только потом
+     сменятся. shownSlug — то, что на экране, slug — то, что выбрано. */
+  const [shownSlug, setShownSlug] = useState(slug);
+  const [phase, setPhase] = useState('in');
+
+  useEffect(() => {
+    if (slug === shownSlug) return undefined;
+    setPhase('out');
+    const timer = setTimeout(() => {
+      setShownSlug(slug);
+      setPhase('in');
+    }, SWAP_OUT);
+    return () => clearTimeout(timer);
+  }, [slug, shownSlug]);
+
+  const category = categories.find((c) => c.slug === shownSlug);
   const dishes = useMemo(
     () => (category ? itemsByCategory[category.id] || [] : []),
     [category, itemsByCategory]
@@ -33,11 +53,10 @@ export default function CategoryPage() {
     }
   }, [params, dishes, setParams]);
 
-  useEffect(() => {
-    window.scrollTo({ top: 0, behavior: 'auto' });
-  }, [slug]);
+  /* Прокрутки наверх при смене категории нет намеренно: гость остаётся там
+     же, где читал, и просто видит, как карточки сменились. */
 
-  if (status === 'ready' && !category) {
+  if (status === 'ready' && !categories.find((c) => c.slug === slug)) {
     return (
       <div className="page">
         <Header />
@@ -70,7 +89,7 @@ export default function CategoryPage() {
               <span className="label">{t('menu.back')}</span>
             </Link>
 
-            <div className="cat-hero__row">
+            <div className={`cat-hero__row swap swap--${phase}`}>
               {category && category.image && (
                 <span
                   className="cat-hero__thumb"
@@ -112,7 +131,9 @@ export default function CategoryPage() {
           {dishes.length === 0 ? (
             <p className="cat-empty">{t('menu.empty')}</p>
           ) : (
-            <div className="dish-grid">
+            /* key по категории перезапускает вход: иначе React переиспользует
+               карточки и анимация появления не играет */
+            <div key={shownSlug} className={`dish-grid swap swap--${phase}`}>
               {dishes.map((item, i) => (
                 <DishCard key={item.id} item={item} index={i} onOpen={setActive} />
               ))}

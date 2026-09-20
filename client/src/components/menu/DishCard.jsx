@@ -28,7 +28,12 @@ export default function DishCard({ item, onOpen, index = 0 }) {
     <div
       ref={revealRef}
       className="dish-wrap reveal reveal--scale"
-      style={{ '--reveal-delay': `${Math.min(index, 7) * 0.07}s` }}
+      style={{
+        '--reveal-delay': `${Math.min(index, 7) * 0.07}s`,
+        /* порядковый номер нужен смене категорий: по нему карточки уходят и
+           приходят волной, а не все разом */
+        '--i': Math.min(index, 11),
+      }}
     >
       <article ref={tiltRef} className="dish tilt">
         <button
@@ -87,8 +92,6 @@ export default function DishCard({ item, onOpen, index = 0 }) {
             )}
           </div>
         </div>
-
-        <span className="tilt__glare" aria-hidden="true" />
       </article>
     </div>
   );

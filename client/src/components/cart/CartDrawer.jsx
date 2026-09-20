@@ -9,7 +9,7 @@ import { useGeo } from '../../context/GeoContext';
 import './CartDrawer.css';
 
 export default function CartDrawer() {
-  const { t, p, money, tables, settings, toast } = useApp();
+  const { t, p, money, tables, settings, toast, demo } = useApp();
   const cart = useCart();
   const geo = useGeo();
   const navigate = useNavigate();
@@ -53,7 +53,11 @@ export default function CartDrawer() {
       cart.clear();
       setComment('');
       close();
-      navigate(`/order/${result.id}`);
+      /* justSent доносит до страницы заказа, что гость только что нажал
+         кнопку: там по этому признаку проигрывается дракон с галочкой.
+         Через состояние навигации, а не через запрос — момент отправки
+         знает только эта форма. */
+      navigate(`/order/${result.id}`, { state: { justSent: true } });
     } catch (err) {
       const code = err && err.code ? err.code : 'generic';
       const known = [
@@ -87,6 +91,15 @@ export default function CartDrawer() {
           </div>
         ) : (
           <form className="cart-drawer__form" onSubmit={submit}>
+            {/* Витрина без сервера: честно объясняем, почему кнопка заказа
+                не работает, вместо молча погашенной кнопки. */}
+            {demo && (
+              <p className="cart-drawer__demo">
+                <Icon name="shield" size={16} strokeWidth={1.3} />
+                <span>{t('demo.notice')}</span>
+              </p>
+            )}
+
             <ul className="cart-lines">
               {cart.detailed.map((line) => (
                 <li key={line.id} className="cart-line">

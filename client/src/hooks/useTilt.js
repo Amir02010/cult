@@ -38,8 +38,6 @@ export default function useTilt({ max = 9, scale = 1.02, glare = true } = {}) {
     node.style.setProperty('--tilt-ry', `${ry}deg`);
     node.style.setProperty('--tilt-scale', sc);
     if (glare) {
-      node.style.setProperty('--tilt-mx', `${mx}%`);
-      node.style.setProperty('--tilt-my', `${my}%`);
     }
   }, [glare]);
 

@@ -11,7 +11,7 @@
   --ch: clamp(10px, 1.25vw, 18px);
   /* Цвет тела карточки одним числом: им же красится низ фотографии, поэтому
      стык всегда совпадает — в том числе когда на hover карточка светлеет. */
-  --card-rgb: 8, 12, 9;
+  --card-rgb: var(--card);
   position: relative;
   display: flex;
   flex-direction: column;
@@ -34,7 +34,7 @@
 
 .dish:hover {
   background: var(--line-strong);
-  --card-rgb: 12, 17, 13;
+  --card-rgb: var(--card-hi);
 }
 
 .dish-wrap:hover {
@@ -243,13 +243,76 @@
   gap: 8px;
 }
 
-@media (max-width: 520px) {
+/* На телефоне карточки стоят по две в ряд, то есть на каждую приходится
+   меньше 170 пикселей. Всё внутри пересобрано под эту ширину: цена и кнопка
+   встают друг под друга, описание обрезается двумя строками, срез угла
+   уменьшен — иначе он съедает угол маленькой карточки. */
+@media (max-width: 680px) {
+  .dish {
+    --ch: 9px;
+  }
+
   .dish__body {
-    padding: 13px 14px 15px;
+    padding: 10px 11px 12px;
+    gap: 5px;
   }
+
   .dish__name {
-    font-size: 19px;
+    font-size: 15px;
+    line-height: 1.18;
+    letter-spacing: 0.02em;
   }
+
+  .dish__desc {
+    font-size: 11px;
+    line-height: 1.45;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  .dish__foot {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    margin-top: 4px;
+    padding-top: 10px;
+  }
+
+  .dish__price {
+    font-size: 13px;
+    flex-direction: row;
+    align-items: baseline;
+    gap: 6px;
+  }
+
+  .dish__price em {
+    font-size: 9.5px;
+  }
+
+  .dish__add {
+    width: 100%;
+    justify-content: center;
+    padding: 8px 6px;
+    font-size: 9.5px;
+    letter-spacing: 0.1em;
+    gap: 6px;
+  }
+
+  .dish__foot .qty {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .dish__flag {
+    top: 8px;
+    left: 8px;
+    padding: 3px 8px;
+    font-size: 8px;
+    letter-spacing: 0.16em;
+  }
+
   .dish__zoom {
     display: none;
   }

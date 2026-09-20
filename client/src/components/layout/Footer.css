@@ -1,93 +1,162 @@
+/* Подвал держит три строки: кто мы и как нас найти, разделы меню, копирайт.
+   Раньше здесь были три колонки высотой в пол-экрана ради нескольких строк
+   текста — воздух должен быть осмысленным, а не оставшимся. */
+
 .site-footer {
-  flex: none;
-  margin-top: clamp(50px, 8vw, 110px);
-  border-top: 1px solid var(--line-soft);
-  background: linear-gradient(180deg, rgba(8, 12, 9, 0.6), var(--bg-deep));
+  position: relative;
+  margin-top: clamp(34px, 4.5vw, 68px);
+  padding-top: clamp(26px, 4vw, 44px);
+  background: linear-gradient(180deg, transparent, rgba(var(--card), 0.55));
+}
+
+/* Верхняя граница затухает к краям — прямая линия во всю ширину выглядит
+   как разделитель в документе, а не как край страницы. */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--line), transparent);
 }
 
 .site-footer__inner {
-  display: grid;
-  grid-template-columns: 1.4fr 1fr 1fr;
-  gap: clamp(28px, 4vw, 70px);
-  padding-block: clamp(34px, 5vw, 64px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: clamp(20px, 3vw, 44px);
 }
+
+/* ----------------------------------------------------------------- бренд */
 
 .site-footer__brand {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 10px;
+  min-width: 0;
+}
+
+.brand--footer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--gold);
+}
+
+.brand--footer .brand__name {
+  font-size: 25px;
 }
 
 .site-footer__tagline {
+  font-size: 12.5px;
+  line-height: 1.6;
   color: var(--ink-faint);
+  max-width: 34ch;
 }
 
-.site-footer__col {
+/* -------------------------------------------------------------- контакты */
+
+.site-footer__contacts {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-}
-
-.site-footer__col ul {
-  display: grid;
-  gap: 10px;
-}
-
-.site-footer__col a {
-  font-size: 14px;
-  color: var(--ink-soft);
-  transition: color 0.3s var(--ease);
-}
-
-.site-footer__col a:hover {
-  color: var(--gold-bright);
+  align-items: flex-start;
+  gap: 9px;
 }
 
 .site-footer__line {
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
+  gap: 9px;
+  font-size: 13px;
   color: var(--ink-soft);
 }
 
 .site-footer__line svg {
-  color: var(--gold-deep);
   flex: none;
+  color: var(--gold-deep);
 }
+
+.site-footer__line--link {
+  transition: color 0.3s var(--ease);
+}
+
+.site-footer__line--link:hover {
+  color: var(--gold-bright);
+}
+
+/* --------------------------------------------------------------- разделы */
+
+.site-footer__cats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: clamp(22px, 3.4vw, 36px);
+}
+
+.site-footer__cat {
+  padding: 7px 15px;
+  border: 1px solid var(--line-soft);
+  border-radius: 999px;
+  font-size: 12px;
+  letter-spacing: 0.04em;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  transition: color 0.3s var(--ease), border-color 0.3s var(--ease),
+    background 0.3s var(--ease);
+}
+
+.site-footer__cat:hover {
+  color: var(--gold-bright);
+  border-color: var(--line);
+  background: rgba(233, 207, 160, 0.05);
+}
+
+/* -------------------------------------------------------------- нижняя строка */
 
 .site-footer__bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 18px;
-  padding-block: 20px;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: clamp(22px, 3.4vw, 36px);
+  /* только вертикальные отступы: горизонтальные приходят от .shell, и
+     сокращённая запись padding их затирала — строка липла к краям экрана */
+  padding-top: 16px;
+  padding-bottom: clamp(18px, 2.6vw, 26px);
   border-top: 1px solid var(--line-soft);
-  color: var(--ink-faint);
 }
 
-.site-footer__claim {
-  display: inline-flex;
-  align-items: center;
-  gap: 16px;
+.site-footer__copy,
+.site-footer__by {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: rgba(243, 231, 210, 0.34);
 }
 
-@media (max-width: 860px) {
+.site-footer__by strong {
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--gold);
+}
+
+@media (max-width: 620px) {
   .site-footer__inner {
-    grid-template-columns: 1fr 1fr;
-  }
-  .site-footer__brand {
-    grid-column: 1 / -1;
-  }
-}
-
-@media (max-width: 520px) {
-  .site-footer__inner {
-    grid-template-columns: 1fr;
+    gap: 22px;
   }
   .site-footer__bar {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
+    justify-content: center;
+    text-align: center;
+    gap: 6px;
+  }
+  .site-footer__cats {
+    gap: 7px;
+  }
+  .site-footer__cat {
+    padding: 6px 13px;
+    font-size: 11.5px;
   }
 }

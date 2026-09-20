@@ -175,6 +175,18 @@ const dict = {
     uz: 'Savollaringiz bo‘lsa — ofitsiant yaqin atrofda va mamnuniyat bilan javob beradi.',
   },
 
+  'demo.notice': {
+    ru: 'Это витрина меню. Заказ принимается только в зале ресторана — с планшета или телефона за столиком.',
+    en: 'This is a menu showcase. Orders are taken only in the dining room — from a device at your table.',
+    uz: 'Bu — menyu vitrinasi. Buyurtma faqat restoran zalida, stoldagi qurilmadan qabul qilinadi.',
+  },
+
+  'sent.title': { ru: 'Заказ отправлен', en: 'Order sent', uz: 'Buyurtma yuborildi' },
+  'sent.text': {
+    ru: 'Официант уже видит его у себя на экране. Как только заказ подтвердят, вы увидите это здесь.',
+    en: 'The waiter can already see it on their screen. You will see the confirmation here.',
+    uz: 'Ofitsiant uni allaqachon ekranida ko‘rmoqda. Tasdiqlangach, buni shu yerda ko‘rasiz.',
+  },
   'accepted.title': { ru: 'Заказ принят', en: 'Order accepted', uz: 'Buyurtma qabul qilindi' },
   'accepted.text': {
     ru: 'Официант подтвердил ваш заказ — кухня уже начала работу.',

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Navigate, Route, Routes, useLocation, useParams } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 import { GeoProvider } from './context/GeoContext';
@@ -29,11 +29,23 @@ function TableEntry() {
   return <Navigate to="/menu" replace />;
 }
 
+/* Переход между категориями — не смена страницы, а смена содержимого: шапка,
+   обложка и лента вкладок остаются на месте, меняются только карточки.
+   Поэтому такие переходы не прокручивают наверх и не перезапускают появление
+   страницы. */
+const isCategory = (path) => path.startsWith('/menu/');
+
 function ScrollToTop() {
   const { pathname } = useLocation();
+  const prev = useRef(pathname);
+
   useEffect(() => {
+    const from = prev.current;
+    prev.current = pathname;
+    if (isCategory(from) && isCategory(pathname)) return;
     window.scrollTo({ top: 0, behavior: 'auto' });
   }, [pathname]);
+
   return null;
 }
 
@@ -123,7 +135,13 @@ function Shell() {
       )}
 
       <ScrollToTop />
-      <div key={location.pathname} className={isAdmin ? undefined : 'page-fade'}>
+      {/* Все категории делят один ключ: React не пересобирает страницу
+          заново, и появление страницы не проигрывается при каждом
+          переключении вкладки. */}
+      <div
+        key={isCategory(location.pathname) ? '/menu/*' : location.pathname}
+        className={isAdmin ? undefined : 'page-fade'}
+      >
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/menu" element={<MenuPage />} />
