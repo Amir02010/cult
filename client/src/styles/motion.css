@@ -1,0 +1,196 @@
+/* =========================================================================
+   Shared motion primitives. Every effect here is decorative: the layout must
+   read correctly with all of it switched off.
+   ========================================================================= */
+
+/* ------------------------------------------------------------- scroll reveal */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.9s var(--ease), transform 0.9s var(--ease);
+  transition-delay: var(--reveal-delay, 0s);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+.reveal--left {
+  transform: translateX(-28px);
+}
+
+.reveal--scale {
+  transform: scale(0.965);
+}
+
+/* ------------------------------------------------------------- page change */
+
+/* fill-mode здесь именно backwards, а не both, и это важно.
+   С both браузер после анимации оставляет вычисленный transform
+   matrix(1,0,0,1,0,0) — сдвиг нулевой, но свойство уже не none. Элемент с
+   transform становится опорой для position: fixed внутри себя, и модалка
+   блюда вместо экрана позиционировалась относительно страницы: на длинном
+   меню она уезжала на несколько тысяч пикселей вниз и была не видна.
+   При backwards стартовые значения применяются до запуска, а по окончании
+   элемент возвращается к обычным стилям — transform снова none. */
+.page-fade {
+  animation: pageFade 0.65s var(--ease) backwards;
+}
+
+@keyframes pageFade {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* --------------------------------------------------------------- 3D tilt */
+
+.tilt {
+  --tilt-rx: 0deg;
+  --tilt-ry: 0deg;
+  --tilt-scale: 1;
+  --tilt-mx: 50%;
+  --tilt-my: 50%;
+  transform: perspective(1000px) rotateX(var(--tilt-rx)) rotateY(var(--tilt-ry))
+    scale(var(--tilt-scale));
+  transform-style: preserve-3d;
+  transition: transform 0.45s var(--ease), border-color 0.45s var(--ease),
+    background 0.45s var(--ease), box-shadow 0.45s var(--ease);
+}
+
+.tilt:hover {
+  transition-duration: 0.12s;
+}
+
+/* a highlight that follows the pointer across the surface */
+.tilt__glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(
+    38% 38% at var(--tilt-mx) var(--tilt-my),
+    rgba(255, 240, 214, 0.22),
+    transparent 70%
+  );
+  transition: opacity 0.4s var(--ease);
+  z-index: 3;
+}
+
+.tilt:hover .tilt__glare {
+  opacity: 1;
+}
+
+/* content that lifts off the card surface while it tilts */
+.tilt__layer {
+  transform: translateZ(26px);
+}
+
+/* ------------------------------------------------------------ shine sweep */
+
+.shine {
+  position: relative;
+  overflow: hidden;
+}
+
+.shine::after {
+  content: '';
+  position: absolute;
+  top: -60%;
+  bottom: -60%;
+  left: -40%;
+  width: 28%;
+  background: linear-gradient(
+    100deg,
+    transparent,
+    rgba(255, 244, 222, 0.16),
+    transparent
+  );
+  transform: translateX(-160%) rotate(12deg);
+  pointer-events: none;
+  transition: transform 0.9s var(--ease);
+}
+
+.shine:hover::after,
+.shine:focus-visible::after {
+  transform: translateX(520%) rotate(12deg);
+}
+
+/* --------------------------------------------------------------- pop / pulse */
+
+@keyframes popIn {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.32);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.pop {
+  animation: popIn 0.42s var(--ease);
+}
+
+@keyframes emberPulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(224, 138, 60, 0.35);
+  }
+  60% {
+    box-shadow: 0 0 0 10px rgba(224, 138, 60, 0);
+  }
+}
+
+/* -------------------------------------------------------------- underline */
+
+.ul-slide {
+  position: relative;
+}
+
+.ul-slide::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -3px;
+  height: 1px;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: right;
+  transition: transform 0.5s var(--ease);
+}
+
+.ul-slide:hover::after {
+  transform: scaleX(1);
+  transform-origin: left;
+}
+
+/* ------------------------------------------------------------- reduced motion */
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .tilt {
+    transform: none !important;
+  }
+  .tilt__glare,
+  .shine::after {
+    display: none;
+  }
+  .page-fade {
+    animation: none;
+  }
+}

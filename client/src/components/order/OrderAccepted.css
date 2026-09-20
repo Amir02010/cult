@@ -1,0 +1,415 @@
+/* Раскадровка (мс от запуска):
+     0 → 950   дракон влетает слева, крыло бьёт
+   950 → 1400  дракон складывается в точку у начала галочки
+  1150 → 1520  вспышка и искры в этой точке
+  1300 → 2000  прочерчивается кольцо
+  1420 → 2040  прочерчивается галочка
+  1500 →       поднимается текст
+   Все задержки заданы в анимациях, а не таймерами, поэтому фазы не
+   расходятся, даже если вкладка ненадолго ушла в фон. */
+
+.ok {
+  position: fixed;
+  inset: 0;
+  z-index: 210;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  transition: opacity 0.4s var(--ease);
+}
+
+.ok--out {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.ok__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(3, 5, 4, 0.82);
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+  animation: okFade 0.45s var(--ease) both;
+}
+
+@keyframes okFade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* ---------------------------------------------------------------- карточка */
+
+.ok__card {
+  --ch: clamp(12px, 1.6vw, 22px);
+  position: relative;
+  width: min(430px, 100%);
+  padding: clamp(22px, 4vw, 34px) clamp(20px, 4vw, 34px) clamp(20px, 3vw, 28px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  background: rgba(9, 13, 10, 0.96);
+  border: 1px solid var(--line);
+  clip-path: polygon(
+    var(--ch) 0,
+    calc(100% - var(--ch)) 0,
+    100% var(--ch),
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    var(--ch) 100%,
+    0 calc(100% - var(--ch)),
+    0 var(--ch)
+  );
+  animation: okCard 0.65s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+@keyframes okCard {
+  from {
+    opacity: 0;
+    transform: translateY(22px) scale(0.965);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------ сцена */
+
+.ok__stage {
+  position: relative;
+  width: min(152px, 38vw);
+  aspect-ratio: 1;
+  margin-bottom: clamp(12px, 2.2vw, 20px);
+}
+
+/* --- дракон --- */
+
+.ok__flight {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Дракон крупнее сцены — сама сцена задаёт размер галочки, а он должен
+   прилетать в полный рост. Карточка обрезает его по своим краям. */
+.ok__dragon {
+  position: relative;
+  width: 200%;
+  aspect-ratio: 1000 / 409;
+  filter: drop-shadow(0 0 22px rgba(224, 138, 60, 0.5)) brightness(1.25) saturate(1.1);
+  opacity: 0;
+}
+
+.ok__l {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.ok--run .ok__flight {
+  animation: okFly 0.95s cubic-bezier(0.19, 1, 0.22, 1) both;
+}
+
+.ok--run .ok__dragon {
+  animation: okMorph 0.45s cubic-bezier(0.55, 0, 0.85, 0.25) 0.95s both;
+}
+
+.ok--run .ok__wing {
+  transform-origin: 53% 56%;
+  animation: okWing 0.44s cubic-bezier(0.45, 0, 0.35, 1) 6;
+}
+
+.ok--run .ok__tail {
+  transform-origin: 41% 62%;
+  animation: okTail 0.9s ease-in-out 3;
+}
+
+.ok--run .ok__head {
+  transform-origin: 62% 54%;
+  animation: okHead 1.1s ease-in-out 3;
+}
+
+@keyframes okFly {
+  0% {
+    opacity: 0;
+    transform: translate3d(-150%, 34%, 0) scale(0.45) rotate(-16deg);
+  }
+  55% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+}
+
+/* Дракон не просто исчезает: он вытягивается и стягивается к точке 30% / 52%
+   сцены — туда, где начинается галочка. Иначе связь между ними не читается. */
+@keyframes okMorph {
+  0% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+    filter: brightness(1.25) saturate(1.1);
+  }
+  45% {
+    opacity: 1;
+    transform: translate(-12%, 1%) scale(0.62, 0.72) rotate(-7deg);
+    filter: brightness(2.1) saturate(0.7);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-20%, 2%) scale(0.06, 0.16) rotate(-12deg);
+    filter: brightness(3.4) saturate(0);
+  }
+}
+
+@keyframes okWing {
+  0% {
+    transform: rotate(-10deg) scaleY(0.94);
+  }
+  40% {
+    transform: rotate(14deg) scaleY(1.07);
+  }
+  100% {
+    transform: rotate(-10deg) scaleY(0.94);
+  }
+}
+
+@keyframes okTail {
+  0%,
+  100% {
+    transform: rotate(-7deg) translateY(3px);
+  }
+  50% {
+    transform: rotate(6deg) translateY(-3px);
+  }
+}
+
+@keyframes okHead {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+/* --- вспышка в точке превращения --- */
+
+.ok__spark {
+  position: absolute;
+  left: 30%;
+  top: 52%;
+  width: 10px;
+  height: 10px;
+  margin: -5px 0 0 -5px;
+  border-radius: 50%;
+  background: #fff6e2;
+  box-shadow: 0 0 18px 6px rgba(233, 207, 160, 0.75), 0 0 46px 16px rgba(224, 138, 60, 0.4);
+  opacity: 0;
+}
+
+.ok--run .ok__spark {
+  animation: okSpark 0.42s ease-out 1.15s both;
+}
+
+@keyframes okSpark {
+  0% {
+    opacity: 0;
+    transform: scale(0.2);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(2.6);
+  }
+}
+
+/* --- галочка --- */
+
+.ok__mark {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: none;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.ok__ring {
+  stroke: var(--gold);
+  stroke-width: 1.4;
+  opacity: 0.85;
+  stroke-dasharray: 277;
+  stroke-dashoffset: 277;
+  transform: rotate(-96deg);
+  transform-origin: 50% 50%;
+}
+
+.ok--run .ok__ring {
+  animation: okDraw 0.72s cubic-bezier(0.3, 0, 0.2, 1) 1.3s both;
+}
+
+.ok__tick {
+  stroke: var(--gold-bright);
+  stroke-width: 3.8;
+  stroke-dasharray: 62;
+  stroke-dashoffset: 62;
+  filter: drop-shadow(0 0 7px rgba(233, 207, 160, 0.6));
+}
+
+.ok--run .ok__tick {
+  animation: okDraw 0.62s cubic-bezier(0.4, 0, 0.2, 1) 1.42s both,
+    okTickGlow 1.1s var(--ease) 2.02s both;
+}
+
+@keyframes okDraw {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes okTickGlow {
+  0% {
+    filter: drop-shadow(0 0 18px rgba(233, 207, 160, 0.95));
+  }
+  100% {
+    filter: drop-shadow(0 0 7px rgba(233, 207, 160, 0.5));
+  }
+}
+
+/* --- искры --- */
+
+.ok__ember {
+  position: absolute;
+  left: 30%;
+  top: 52%;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--ember);
+  box-shadow: 0 0 8px 2px rgba(224, 138, 60, 0.6);
+  opacity: 0;
+}
+
+.ok--run .ok__ember {
+  animation: okEmber 0.95s ease-out both;
+  animation-delay: calc(1.18s + var(--i) * 0.035s);
+}
+
+@keyframes okEmber {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0) scale(0.5);
+  }
+  25% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translate(calc(-26px + var(--i) * 13px), calc(-34px - var(--i) * 5px)) scale(1.2);
+  }
+}
+
+/* ------------------------------------------------------------------ текст */
+
+.ok__title,
+.ok__num,
+.ok__text,
+.ok__btn {
+  animation: okRise 0.7s var(--ease) both;
+}
+
+.ok--run .ok__title {
+  animation-delay: 1.52s;
+}
+.ok--run .ok__num {
+  animation-delay: 1.62s;
+}
+.ok--run .ok__text {
+  animation-delay: 1.72s;
+}
+.ok--run .ok__btn {
+  animation-delay: 1.84s;
+}
+
+@keyframes okRise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.ok__title {
+  font-size: clamp(24px, 4vw, 33px);
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--gold-bright);
+}
+
+.ok__num {
+  margin-top: 8px;
+  color: var(--ink-faint);
+}
+
+.ok__num strong {
+  color: var(--gold);
+  font-weight: 400;
+}
+
+.ok__text {
+  margin-top: 10px;
+  max-width: 34ch;
+  font-size: 13.5px;
+  line-height: 1.65;
+  color: var(--ink-faint);
+}
+
+.ok__btn {
+  margin-top: clamp(16px, 3vw, 22px);
+  gap: 10px;
+}
+
+/* ------------------------------------------------------------ motion off */
+
+@media (prefers-reduced-motion: reduce) {
+  .ok__flight,
+  .ok__spark,
+  .ok__ember {
+    display: none;
+  }
+  .ok--run .ok__ring,
+  .ok--run .ok__tick {
+    animation: okDraw 0.3s linear both;
+  }
+  .ok__card,
+  .ok--run .ok__title,
+  .ok--run .ok__num,
+  .ok--run .ok__text,
+  .ok--run .ok__btn {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}

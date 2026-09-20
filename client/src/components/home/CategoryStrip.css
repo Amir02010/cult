@@ -1,0 +1,213 @@
+.cat-strip {
+  width: 100%;
+}
+
+.cat-strip__track {
+  perspective: 1200px;
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: clamp(10px, 1.55vw, 24px);
+}
+
+/* ------------------------------------------------------------------ card */
+
+.cat-card-wrap {
+  display: block;
+  min-width: 0;
+}
+
+.cat-card {
+  --ch: clamp(12px, 1.5vw, 24px);
+  display: block;
+  width: 100%;
+  position: relative;
+  aspect-ratio: 183 / 292;
+  min-width: 0;
+  will-change: transform;
+}
+
+.cat-card:hover {
+  filter: drop-shadow(0 22px 40px rgba(0, 0, 0, 0.55));
+}
+
+/* The frame layer paints the hairline; the body sits 1px inside it, so the
+   outline follows the chamfered octagon exactly. */
+.cat-card__frame,
+.cat-card__photo,
+.cat-card__veil,
+.cat-card__sheen,
+.cat-card .tilt__glare,
+.cat-card__body {
+  position: absolute;
+  inset: 0;
+  clip-path: polygon(
+    var(--ch) 0,
+    calc(100% - var(--ch)) 0,
+    100% var(--ch),
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    var(--ch) 100%,
+    0 calc(100% - var(--ch)),
+    0 var(--ch)
+  );
+}
+
+.cat-card__frame {
+  background: var(--line);
+  transition: background 0.5s var(--ease);
+}
+
+.cat-card:hover .cat-card__frame {
+  background: var(--line-strong);
+}
+
+.cat-card__photo {
+  inset: 1px;
+  background-color: #080c09;
+  background-repeat: no-repeat;
+  background-size: 0 0;
+  transform: scale(1.001);
+  transition: transform 1.2s var(--ease), filter 0.7s var(--ease);
+  filter: saturate(0.94) brightness(0.96);
+}
+
+/* The photo fills the upper part of the card and the rest stays solid, exactly
+   as in the reference layout, while still cropping with `cover`. */
+.cat-card__photo::after {
+  content: '';
+  position: absolute;
+  inset: 0 0 39% 0;
+  background-image: inherit;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.cat-card:hover .cat-card__photo {
+  transform: scale(1.06);
+  filter: saturate(1.04) brightness(1.04);
+}
+
+.cat-card__veil {
+  inset: 1px;
+  background: linear-gradient(
+    180deg,
+    rgba(4, 7, 5, 0.1) 0%,
+    rgba(4, 7, 5, 0.26) 34%,
+    rgba(4, 7, 5, 0.8) 54%,
+    rgba(6, 9, 7, 1) 66%,
+    rgba(6, 9, 7, 1) 100%
+  );
+}
+
+.cat-card__sheen {
+  inset: 1px;
+  pointer-events: none;
+  background: linear-gradient(105deg, transparent 38%, rgba(255, 244, 222, 0.16) 50%, transparent 62%);
+  transform: translateX(-120%);
+  transition: transform 1s var(--ease);
+}
+
+.cat-card:hover .cat-card__sheen {
+  transform: translateX(120%);
+}
+
+.cat-card__body {
+  inset: 1px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: clamp(8px, 0.85vw, 14px);
+  padding: 0 8px clamp(14px, 1.5vw, 24px);
+  text-align: center;
+}
+
+.cat-card__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(34px, 3.1vw, 48px);
+  height: clamp(34px, 3.1vw, 48px);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--gold);
+  transition: border-color 0.5s var(--ease), background 0.5s var(--ease);
+}
+
+.cat-card:hover .cat-card__icon {
+  border-color: var(--gold-deep);
+  background: rgba(233, 207, 160, 0.08);
+  transform: translateZ(34px) scale(1.08);
+}
+
+.cat-card__icon {
+  transform: translateZ(0);
+  transition: border-color 0.5s var(--ease), background 0.5s var(--ease),
+    transform 0.55s var(--ease);
+}
+
+.cat-card__name {
+  transition: color 0.4s var(--ease), transform 0.55s var(--ease);
+}
+
+.cat-card:hover .cat-card__name {
+  color: var(--gold-bright);
+  transform: translateZ(22px);
+}
+
+.cat-card__name {
+  font-size: clamp(8px, 0.68vw, 11px);
+  font-weight: 400;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+.cat-card__arrow {
+  color: var(--ink-faint);
+  transition: color 0.4s var(--ease), transform 0.5s var(--ease);
+}
+
+.cat-card:hover .cat-card__arrow {
+  color: var(--gold-bright);
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------------- responsive */
+
+@media (max-width: 1080px) {
+  .cat-strip__track {
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(150px, 1fr);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 6px;
+    margin-inline: calc(var(--gutter) * -1);
+    padding-inline: var(--gutter);
+    scroll-padding-inline: var(--gutter);
+  }
+  .cat-card-wrap {
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 620px) {
+  .cat-strip__track {
+    grid-auto-columns: minmax(126px, 1fr);
+    gap: 10px;
+  }
+  .cat-card {
+    aspect-ratio: 150 / 210;
+  }
+  .cat-card__sheen,
+  .cat-card .tilt__glare {
+    display: none;
+  }
+  .cat-card__name {
+    font-size: 9px;
+    letter-spacing: 0.16em;
+  }
+}

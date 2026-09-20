@@ -1,0 +1,18 @@
+{
+  "name": "cult-restaurant",
+  "version": "1.0.0",
+  "private": true,
+  "description": "CULT Restaurant — online menu (Create React App) + Express API with geofenced ordering",
+  "scripts": {
+    "install:all": "npm install && npm --prefix server install && npm --prefix client install",
+    "start": "node scripts/dev.js",
+    "start:client": "npm --prefix client start",
+    "start:server": "npm --prefix server start",
+    "build": "npm --prefix client run build",
+    "serve": "npm --prefix server run serve",
+    "ports": "node scripts/ports.js",
+    "open": "node scripts/access.js open",
+    "lock": "node scripts/access.js lock",
+    "reset": "node scripts/reset.js"
+  }
+}

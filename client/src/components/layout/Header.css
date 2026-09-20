@@ -1,0 +1,260 @@
+.site-header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 60;
+  height: var(--header-h);
+  transition: background 0.5s var(--ease), border-color 0.5s var(--ease),
+    backdrop-filter 0.5s var(--ease);
+  border-bottom: 1px solid transparent;
+}
+
+.site-header.is-scrolled {
+  background: rgba(5, 8, 6, 0.86);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom-color: var(--line-soft);
+}
+
+.site-header__inner {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.site-header__left,
+.site-header__right {
+  display: flex;
+  align-items: center;
+  gap: clamp(12px, 1.5vw, 24px);
+  min-width: 0;
+}
+
+/* ----------------------------------------------------------------- brand */
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--gold);
+  transition: color 0.4s var(--ease);
+}
+
+.brand:hover {
+  color: var(--gold-bright);
+}
+
+.brand__mark {
+  flex: none;
+  width: clamp(32px, 3.5vw, 54px);
+  height: clamp(32px, 3.5vw, 54px);
+}
+
+.brand__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  line-height: 1;
+}
+
+.brand__name {
+  font-family: var(--font-display);
+  font-size: clamp(24px, 2.45vw, 38px);
+  font-weight: 400;
+  letter-spacing: 0.22em;
+  color: var(--gold-bright);
+}
+
+.brand__sub {
+  font-size: clamp(7px, 0.62vw, 10px);
+  font-weight: 300;
+  letter-spacing: 0.5em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  padding-left: 3px;
+}
+
+/* ------------------------------------------------------------- separators */
+
+.site-header__divider {
+  width: 1px;
+  height: 30px;
+  background: var(--line);
+  flex: none;
+}
+
+.site-header__rule {
+  width: clamp(30px, 4vw, 60px);
+  height: 1px;
+  background: var(--line);
+  flex: none;
+}
+
+.site-header__tag {
+  color: var(--ink-soft);
+  white-space: nowrap;
+  transition: color 0.35s var(--ease);
+}
+
+.site-header__tag:hover,
+.site-header__tag.active {
+  color: var(--gold-bright);
+}
+
+/* ------------------------------------------------------------- languages */
+
+.lang {
+  display: flex;
+  align-items: center;
+  gap: clamp(10px, 1.1vw, 18px);
+}
+
+.lang__btn {
+  position: relative;
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--ink-faint);
+  padding-bottom: 5px;
+  transition: color 0.35s var(--ease);
+}
+
+.lang__btn::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s var(--ease);
+}
+
+.lang__btn:hover {
+  color: var(--ink);
+}
+
+.lang__btn.is-active {
+  color: var(--gold-bright);
+}
+
+.lang__btn.is-active::after {
+  transform: scaleX(1);
+}
+
+/* ------------------------------------------------------------ icon buttons */
+
+.icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  color: var(--ink-soft);
+  transition: color 0.35s var(--ease);
+}
+
+.icon-btn:hover {
+  color: var(--gold-bright);
+}
+
+.cart-badge {
+  position: absolute;
+  top: 2px;
+  right: -1px;
+  min-width: 15px;
+  height: 15px;
+  padding: 0 4px;
+  border-radius: 9px;
+  background: rgba(233, 207, 160, 0.16);
+  border: 1px solid var(--line);
+  color: var(--ink-faint);
+  font-size: 9px;
+  font-weight: 400;
+  line-height: 13px;
+  text-align: center;
+  transition: background 0.35s var(--ease), color 0.35s var(--ease);
+}
+
+.cart-badge.is-filled {
+  background: var(--gold);
+  border-color: var(--gold);
+  color: #10120d;
+}
+
+@media (max-width: 900px) {
+  .site-header__tag,
+  .site-header__rule {
+    display: none;
+  }
+  .site-header__left .site-header__divider {
+    display: none;
+  }
+}
+
+@media (max-width: 620px) {
+  .lang {
+    gap: 8px;
+  }
+  .lang__btn {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+  .site-header__right .site-header__divider {
+    display: none;
+  }
+  .icon-btn {
+    width: 32px;
+    height: 32px;
+  }
+  .brand__sub {
+    letter-spacing: 0.34em;
+  }
+}
+
+
+/* --------------------------------------------------- cart feedback ripple */
+
+.icon-btn__ripple {
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 1px solid var(--gold);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.icon-btn__ripple.is-on {
+  animation: ripple 0.65s var(--ease);
+}
+
+@keyframes ripple {
+  0% {
+    opacity: 0.9;
+    transform: scale(0.6);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(1.75);
+  }
+}
+
+/* the brand mark breathes very slightly so the header is never fully static */
+.brand__mark {
+  transition: transform 0.6s var(--ease), filter 0.6s var(--ease);
+}
+
+.brand:hover .brand__mark {
+  transform: rotate(-8deg) scale(1.06);
+  filter: drop-shadow(0 0 14px rgba(233, 207, 160, 0.45));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .icon-btn__ripple.is-on {
+    animation: none;
+  }
+}

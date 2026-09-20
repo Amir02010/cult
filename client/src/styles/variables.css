@@ -1,0 +1,50 @@
+:root {
+  /* --- surface ---------------------------------------------------------- */
+  --bg: #050806;
+  --bg-deep: #030504;
+  --bg-raise: #0a0f0c;
+  --bg-panel: rgba(9, 14, 11, 0.72);
+  --bg-glass: rgba(6, 10, 8, 0.55);
+
+  /* --- ink -------------------------------------------------------------- */
+  --ink: #f3e7d2;
+  --ink-soft: rgba(243, 231, 210, 0.68);
+  --ink-faint: rgba(243, 231, 210, 0.42);
+
+  /* --- brand ------------------------------------------------------------ */
+  --gold: #e9cfa0;
+  --gold-bright: #f6e3bd;
+  --gold-deep: #c9a86e;
+  --ember: #e08a3c;
+  --ember-soft: rgba(224, 138, 60, 0.18);
+
+  /* --- lines ------------------------------------------------------------ */
+  --line: rgba(233, 207, 160, 0.22);
+  --line-soft: rgba(233, 207, 160, 0.12);
+  --line-strong: rgba(233, 207, 160, 0.45);
+
+  /* --- state ------------------------------------------------------------ */
+  --ok: #7fbf8a;
+  --warn: #e0b13c;
+  --danger: #d4695c;
+
+  /* --- type ------------------------------------------------------------- */
+  --font-display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --font-sans: 'Jost', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+
+  /* --- rhythm ----------------------------------------------------------- */
+  --gutter: clamp(18px, 3.9vw, 60px);
+  --header-h: clamp(64px, 7.2vw, 112px);
+  --radius: 4px;
+  --radius-lg: 10px;
+
+  /* --- motion ----------------------------------------------------------- */
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --dur: 0.55s;
+}
+
+@media (max-width: 720px) {
+  :root {
+    --header-h: 62px;
+  }
+}

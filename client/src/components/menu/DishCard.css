@@ -1,0 +1,256 @@
+.dish-wrap {
+  perspective: 1100px;
+}
+
+/* Огранка как у карточек категорий: восьмиугольник со срезанными углами.
+   Сама карточка красится в цвет линии и даёт детям отступ в 1px — этот
+   просвет и читается как золотая рамка по всему контуру, включая срезы.
+   box-shadow по такой форме не идёт (тень квадратная), поэтому объём даёт
+   drop-shadow на обёртке. */
+.dish {
+  --ch: clamp(10px, 1.25vw, 18px);
+  /* Цвет тела карточки одним числом: им же красится низ фотографии, поэтому
+     стык всегда совпадает — в том числе когда на hover карточка светлеет. */
+  --card-rgb: 8, 12, 9;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: 1px;
+  background: var(--line);
+  clip-path: polygon(
+    var(--ch) 0,
+    calc(100% - var(--ch)) 0,
+    100% var(--ch),
+    100% calc(100% - var(--ch)),
+    calc(100% - var(--ch)) 100%,
+    var(--ch) 100%,
+    0 calc(100% - var(--ch)),
+    0 var(--ch)
+  );
+  transition: background 0.5s var(--ease);
+  will-change: transform;
+}
+
+.dish:hover {
+  background: var(--line-strong);
+  --card-rgb: 12, 17, 13;
+}
+
+.dish-wrap:hover {
+  filter: drop-shadow(0 22px 44px rgba(0, 0, 0, 0.55));
+}
+
+/* ------------------------------------------------------------------ media */
+
+/* Фото повторяет верхние срезы карточки, иначе его прямой угол закрыл бы
+   рамку на диагонали. --ci = срез, уменьшенный на отступ в 1px. */
+.dish__media {
+  --ci: calc(var(--ch) - 1px);
+  position: relative;
+  display: block;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: rgb(var(--card-rgb));
+  clip-path: polygon(
+    var(--ci) 0,
+    calc(100% - var(--ci)) 0,
+    100% var(--ci),
+    100% 100%,
+    0 100%,
+    0 var(--ci)
+  );
+}
+
+.dish__photo {
+  position: absolute;
+  inset: 0;
+  background: rgb(var(--card-rgb)) center / cover no-repeat;
+  transition: transform 1.3s var(--ease), filter 0.6s var(--ease);
+  will-change: transform;
+}
+
+/* the photo pushes past the frame and turns slightly with the card, which is
+   what reads as the dish changing angle under the cursor */
+.dish:hover .dish__photo {
+  transform: scale(1.12) translateZ(0) rotate(0.6deg);
+  filter: saturate(1.08) brightness(1.06);
+}
+
+/* Растворение фотографии в карточке. Низ снимка доводится до того же цвета,
+   что и тело карточки, поэтому границы между ними не видно — фото просто
+   уходит в темноту. Ступени подобраны неравномерно: ровный градиент даёт
+   заметную полосу там, где начинается затемнение. */
+.dish__shade {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    rgba(var(--card-rgb), 0.16) 0%,
+    rgba(var(--card-rgb), 0) 26%,
+    rgba(var(--card-rgb), 0.08) 46%,
+    rgba(var(--card-rgb), 0.26) 62%,
+    rgba(var(--card-rgb), 0.55) 76%,
+    rgba(var(--card-rgb), 0.82) 88%,
+    rgba(var(--card-rgb), 0.96) 96%,
+    rgb(var(--card-rgb)) 100%
+  );
+  transition: background 0.5s var(--ease);
+}
+
+/* a slow diagonal light pass over the photo */
+.dish__sheen {
+  position: absolute;
+  top: -50%;
+  bottom: -50%;
+  left: -50%;
+  width: 40%;
+  background: linear-gradient(100deg, transparent, rgba(255, 244, 222, 0.14), transparent);
+  transform: translateX(-140%) rotate(14deg);
+  transition: transform 1.05s var(--ease);
+  pointer-events: none;
+}
+
+.dish:hover .dish__sheen {
+  transform: translateX(420%) rotate(14deg);
+}
+
+.dish__flag {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  padding: 5px 11px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: rgba(5, 8, 6, 0.72);
+  color: var(--gold-bright);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transform: translateZ(30px);
+  transition: transform 0.5s var(--ease);
+}
+
+/* Лупа переехала наверх: низ снимка теперь уходит в цвет карточки, и кнопка
+   там висела бы в пустой темноте. */
+.dish__zoom {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: rgba(5, 8, 6, 0.6);
+  color: var(--gold-bright);
+  opacity: 0;
+  transform: translateY(-8px) scale(0.85);
+  transition: opacity 0.45s var(--ease), transform 0.45s var(--ease);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.dish:hover .dish__zoom {
+  opacity: 1;
+  transform: translateY(0) scale(1);
+}
+
+/* ------------------------------------------------------------------- body */
+
+.dish__body {
+  --ci: calc(var(--ch) - 1px);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 16px 18px 18px;
+  flex: 1;
+  margin-top: -1px; /* убирает волосок фона между фото и телом карточки */
+  background: rgb(var(--card-rgb));
+  clip-path: polygon(
+    0 0,
+    100% 0,
+    100% calc(100% - var(--ci)),
+    calc(100% - var(--ci)) 100%,
+    var(--ci) 100%,
+    0 calc(100% - var(--ci))
+  );
+  transition: background 0.5s var(--ease);
+}
+
+
+.dish__name {
+  text-align: left;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+  transition: color 0.35s var(--ease);
+}
+
+.dish:hover .dish__name {
+  color: var(--gold-bright);
+}
+
+.dish__desc {
+  flex: 1;
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--ink-faint);
+}
+
+.dish__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 6px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.dish__price {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 15px;
+  letter-spacing: 0.04em;
+  color: var(--gold);
+  transition: transform 0.45s var(--ease);
+}
+
+.dish:hover .dish__price {
+  transform: translateX(2px);
+}
+
+.dish__price em {
+  font-style: normal;
+  font-size: 11px;
+  letter-spacing: 0.14em;
+  color: var(--ink-faint);
+}
+
+.dish__add {
+  padding-inline: 14px;
+  gap: 8px;
+}
+
+@media (max-width: 520px) {
+  .dish__body {
+    padding: 13px 14px 15px;
+  }
+  .dish__name {
+    font-size: 19px;
+  }
+  .dish__zoom {
+    display: none;
+  }
+}
