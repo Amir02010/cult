@@ -26,23 +26,31 @@ export default function SearchOverlay({ open, onClose }) {
     };
   }, [open, onClose]);
 
+  const categoryOf = React.useCallback(
+    (id) => categories.find((c) => c.id === id),
+    [categories]
+  );
+
   const results = useMemo(() => {
     const q = query.trim().toLowerCase();
     if (q.length < 2) return [];
     return items
       .filter((item) => {
+        const cat = categoryOf(item.categoryId);
         const haystack = [
           p(item.name),
           p(item.description),
+          /* Название категории тоже ищется: гость набирает «пицца» или
+             «десерт», а таких слов нет ни в одном названии блюда — раньше
+             на самый очевидный запрос поиск отвечал «ничего не найдено». */
+          cat ? p(cat.name) : '',
         ]
           .join(' ')
           .toLowerCase();
         return haystack.includes(q);
       })
       .slice(0, 12);
-  }, [query, items, p]);
-
-  const categoryOf = (id) => categories.find((c) => c.id === id);
+  }, [query, items, p, categoryOf]);
 
   const goto = (item) => {
     const cat = categoryOf(item.categoryId);

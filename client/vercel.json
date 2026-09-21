@@ -1,0 +1,10 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "comment": "Запасной конфиг на случай, если в настройках проекта Root Directory указан client — тогда корневой vercel.json не читается вовсе. Правило то же: внутренние адреса отдаём приложению, /api/ оставляем падать.",
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
+    }
+  ]
+}

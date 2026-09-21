@@ -55,6 +55,13 @@ export function AppProvider({ children }) {
     setStatus((s) => (s === 'ready' ? 'ready' : 'loading'));
     try {
       const payload = await api.menu();
+      /* Ответ с кодом 200 ещё не означает меню. Хостинг статики легко
+         отдаёт на /api/menu свою html-страницу — запрос формально удачен, а
+         внутри ничего нужного. Без этой проверки гость видел бы пустое
+         меню вместо витрины. */
+      if (!payload || !Array.isArray(payload.categories) || !Array.isArray(payload.items)) {
+        throw new Error('ответ не похож на меню');
+      }
       setData(payload);
       setStatus('ready');
       return;
@@ -71,6 +78,7 @@ export function AppProvider({ children }) {
       const res = await fetch(`${process.env.PUBLIC_URL}/menu-snapshot.json`);
       if (!res.ok) throw new Error('нет снимка');
       const snapshot = await res.json();
+      if (!snapshot || !Array.isArray(snapshot.items)) throw new Error('снимок повреждён');
       setData(snapshot);
       setStatus('ready');
     } catch (err) {
