@@ -1,0 +1,12 @@
+{
+  "short_name": "CULT",
+  "name": "CULT Restaurant — Online Menu",
+  "icons": [
+    { "src": "images/logo-sm.png", "sizes": "128x128", "type": "image/png" },
+    { "src": "images/logo.png", "sizes": "512x512", "type": "image/png" }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#050806",
+  "background_color": "#050806"
+}

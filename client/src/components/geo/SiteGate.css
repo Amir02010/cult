@@ -1,0 +1,142 @@
+.gate {
+  position: relative;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(20px, 5vw, 60px) var(--gutter);
+  overflow: hidden;
+  background: var(--bg-deep);
+}
+
+.gate__bg {
+  position: absolute;
+  inset: 0;
+  background: #050806 center / cover no-repeat;
+  filter: brightness(0.5) saturate(0.85);
+  transform: scale(1.04);
+}
+
+.gate__veil {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(90% 75% at 50% 45%, rgba(5, 8, 6, 0.55), rgba(3, 5, 4, 0.96));
+}
+
+.gate__lang {
+  position: absolute;
+  top: clamp(18px, 3vw, 34px);
+  right: var(--gutter);
+  z-index: 2;
+  display: flex;
+  gap: clamp(10px, 1.2vw, 18px);
+}
+
+.gate__card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: min(560px, 100%);
+  padding: clamp(28px, 4.5vw, 52px) clamp(22px, 4vw, 48px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: rgba(7, 11, 9, 0.82);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow: 0 44px 110px rgba(0, 0, 0, 0.62);
+  text-align: center;
+  animation: riseIn 0.8s var(--ease) both;
+}
+
+.gate__name {
+  font-family: var(--font-display);
+  font-size: clamp(26px, 3vw, 36px);
+  letter-spacing: 0.26em;
+  color: var(--gold-bright);
+  text-indent: 0.26em;
+  margin-top: -4px;
+}
+
+.gate__rule {
+  margin-bottom: 8px;
+}
+
+.gate__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  color: var(--gold-deep);
+}
+
+.gate__icon.is-busy svg {
+  animation: spin 1.2s linear infinite;
+}
+
+.gate__title {
+  font-size: clamp(22px, 2.8vw, 34px);
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.gate__text {
+  max-width: 44ch;
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-faint);
+}
+
+.gate__meta {
+  color: var(--ink-faint);
+  letter-spacing: 0.14em;
+}
+
+.gate__retry {
+  margin-top: 6px;
+  min-width: 220px;
+}
+
+.gate__contacts {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+  padding-top: 20px;
+  border-top: 1px solid var(--line-soft);
+  width: 100%;
+}
+
+.gate__contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-soft);
+}
+
+.gate__contact svg {
+  color: var(--gold-deep);
+}
+
+.gate__admin {
+  position: relative;
+  z-index: 1;
+  margin-top: 24px;
+  color: rgba(243, 231, 210, 0.28);
+  transition: color 0.3s var(--ease);
+}
+
+.gate__admin:hover {
+  color: var(--gold-bright);
+}

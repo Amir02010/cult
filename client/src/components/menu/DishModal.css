@@ -1,0 +1,131 @@
+.dish-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: clamp(14px, 3vw, 40px);
+}
+
+.dish-modal__scrim {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  background: rgba(3, 5, 4, 0.82);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  animation: fadeIn 0.35s var(--ease) both;
+  cursor: default;
+}
+
+.dish-modal__card {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  width: min(880px, 100%);
+  max-height: 88vh;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: linear-gradient(180deg, #0a0f0b, #060907);
+  box-shadow: 0 40px 90px rgba(0, 0, 0, 0.6);
+  animation: riseIn 0.5s var(--ease) both;
+}
+
+.dish-modal__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  z-index: 2;
+  background: rgba(5, 8, 6, 0.6);
+  border-radius: 50%;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+.dish-modal__photo {
+  min-height: 320px;
+  background: #0b0f0c center / cover no-repeat;
+}
+
+.dish-modal__body {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: clamp(22px, 3vw, 40px);
+  overflow-y: auto;
+}
+
+.dish-modal__flag {
+  align-self: flex-start;
+  padding: 5px 12px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--gold-bright);
+  font-size: 9px;
+  letter-spacing: 0.22em;
+}
+
+.dish-modal__name {
+  font-size: clamp(26px, 3vw, 38px);
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  color: var(--ink);
+}
+
+.dish-modal__desc {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--ink-soft);
+}
+
+.dish-modal__meta {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line-soft);
+}
+
+.dish-modal__price {
+  font-family: var(--font-display);
+  font-size: 30px;
+  letter-spacing: 0.05em;
+  color: var(--gold-bright);
+}
+
+.dish-modal__actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 16px;
+}
+
+.dish-modal__add {
+  flex: 1;
+  white-space: nowrap;
+}
+
+@media (max-width: 760px) {
+  .dish-modal__card {
+    grid-template-columns: 1fr;
+    max-height: 92vh;
+  }
+  .dish-modal__photo {
+    min-height: 0;
+    aspect-ratio: 16 / 10;
+  }
+}
+
+@media (max-width: 420px) {
+  .dish-modal__actions {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .dish-modal__actions .qty {
+    align-self: center;
+  }
+}
